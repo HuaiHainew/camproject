@@ -1,0 +1,250 @@
+<style>
+  /* Style for the autocomplete results */
+  #autocompleteList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background-color: #fff;
+    max-height: 500px;
+    overflow-y: auto;
+    position: absolute;
+    width: 600px;
+  }
+
+  #autocompleteList div {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #autocompleteList div:hover {
+    background-color: #f2f2f2;
+  }
+
+  /* Style for the drug details container */
+  #detailsContainer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  #detailsContainer h3 {
+    color: #333;
+  }
+
+  #detailsContainer p {
+    margin: 5px 0;
+    color: #666;
+  }
+
+  /* Style for the search input */
+  #searchInput {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  #detailsContainer h3 {
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .detailsItem {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .detailsLabel {
+    font-weight: bold;
+    color: #555;
+    flex: 1;
+  }
+
+  .detailsValue {
+    flex: 2;
+    color: #444;
+  }
+
+  #detailsContainer p:last-child {
+    margin-bottom: 0;
+    /* Remove margin-bottom for the last paragraph */
+  }
+</style>
+
+<br></br>
+<br></br>
+<h1>Indication Search</h1>
+
+<div style="margin-top: 10px;">
+
+  <!-- Dropdown for CAInd values -->
+  <select id="caIndicationDropdown">
+    <option value="">Select CA uses</option>
+    {{#each camUses}}
+    <option value="{{this.CAindication}}">{{this.CAindication}}</option>
+    {{/each}}
+  </select>
+
+  <ul id="autocompleteList">
+
+  </ul>
+  <div id="detailsContainer" style="display: none;"></div>
+</div>
+
+
+<script>
+  const caIndicationDropdown = document.getElementById("caIndicationDropdown");
+  const resultsContainer = document.getElementById("autocompleteList"); // Replace with the actual ID of the container to display results
+
+
+
+  function showDrugDetails(selectedDrug) {
+    resultsContainer.innerHTML = '';
+    detailsContainer.style.display = '';
+    detailsContainer.innerHTML = `
+       <h3><font color ="blue">${selectedDrug.cam}</h3>
+    <h5><font color="red"><u>About</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">Acronym:</span>
+      <span class="detailsValue">${selectedDrug.acronym}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Common Name:</span>
+      <span class="detailsValue">${selectedDrug.comm_name}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Scientific Name:</span>
+      <span class="detailsValue">${selectedDrug.sci_name}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Pinyin:</span>
+      <span class="detailsValue">${selectedDrug.pinyin}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Main Constituent:</span>
+      <span class="detailsValue">${selectedDrug.main_const}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Other Constituents:</span>
+      <span class="detailsValue">${selectedDrug.other_const}</span>
+    </div>
+   <div class="detailsItem">
+      <span class="detailsLabel">CAM URL:</span>
+      <span class="detailsValue">  <a href="${selectedDrug.camurl}">${selectedDrug.camurl}</a></span>
+    </div>
+    <h5><font color="red"><u>TCM Characteristics</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">Four Nature:</span>
+      <span class="detailsValue">${selectedDrug.four_nature}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Hot/Cold:</span>
+      <span class="detailsValue">${selectedDrug.hotcold}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Five Flavor:</span>
+      <span class="detailsValue">${selectedDrug.five_flavor}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Nourish Property:</span>
+      <span class="detailsValue">${selectedDrug.nourish_property}</span>
+    </div>
+    <h5><font color="red"><u>Indications</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">CA Indication:</span>
+      <span class="detailsValue">${selectedDrug.CAindication}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">MOA CA Indication:</span>
+      <span class="detailsValue">${selectedDrug.moaCAind}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Other Indication:</span>
+      <span class="detailsValue">${selectedDrug.otherindication}</span>
+    </div>
+     <h5><font color="red"><u>Side Effects / Adverse Drug Reacions</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">ADR:</span>
+      <span class="detailsValue">${selectedDrug.adr}</span>
+    </div>
+      <h5><font color="red"><u>Pharmacokinetics</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">Protein Binding:</span>
+      <span class="detailsValue">${selectedDrug.proteinbinding}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Metabolism:</span>
+      <span class="detailsValue">${selectedDrug.metabolism}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Elimination:</span>
+      <span class="detailsValue">${selectedDrug.elimination}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Enzyme Substrate:</span>
+      <span class="detailsValue">${selectedDrug.enz_substrate}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Enzyme Inducer:</span>
+      <span class="detailsValue">${selectedDrug.enz_inducer}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Enzyme Inhibitor:</span>
+      <span class="detailsValue">${selectedDrug.enz_inhibitor}</span>
+    </div>
+        <h5><font color="red"><u>References</u></h5>
+    <div class="detailsItem">
+      <span class="detailsLabel">Reference Herb:</span>
+      <span class="detailsValue">${selectedDrug.refherb}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Reference ADR:</span>
+      <span class="detailsValue">${selectedDrug.refadr}</span>
+    </div>
+    <div class="detailsItem">
+      <span class="detailsLabel">Last Updated:</span>
+      <span class="detailsValue">${selectedDrug.camdataupdated}</span>
+    </div>
+  `;
+  }
+
+  async function search() {
+    if (document.getElementById("caIndicationDropdown").value.length > 0) {
+
+      const response = await fetch(`/drug/autocomplete?caInd=${document.getElementById("caIndicationDropdown").value}`);
+      const drugList = await response.json();
+
+      // Display the autocomplete results
+
+      const header = document.createElement("b");
+      header.textContent = `Found ${drugList.length} Results: `;
+
+      resultsContainer.appendChild(header);
+      drugList.forEach((drug) => {
+        const resultItem = document.createElement("div");
+        resultItem.textContent = drug.cam;
+        resultItem.addEventListener("click", () => showDrugDetails(drug));
+        resultsContainer.appendChild(resultItem);
+      });
+    }
+    else {
+      resultsContainer.innerHTML = '';
+    }
+  }
+  caIndicationDropdown.addEventListener("change", () => {
+    detailsContainer.innerHTML = '';
+    detailsContainer.style.display = 'none';
+    resultsContainer.innerHTML = '';
+    // Trigger the input event to update the drug list based on CAInd selection
+    search();
+  });
+</script>
