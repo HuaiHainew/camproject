@@ -2,23 +2,16 @@ const Sequelize = require("sequelize");
 
 require("dotenv").config();
 
-// Instantiates Sequelize with database parameters
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PWD,
-  {
-    host: process.env.DB_HOST, // Name or IP of MySQL server
-    port: process.env.DB_PORT, // Port of MySQL server
-    dialect: "mysql", // Tells squelize that MySQL is used
-    logging: false, // Disable logging; default: console.log
-    timestamps: false,
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000,
-    },
-  }
-);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'mysql',  // Make sure your Heroku MySQL addon supports this, or switch to 'postgres' if using Heroku Postgres
+  protocol: 'mysql',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false // Only necessary for PostgreSQL; remove for MySQL unless SSL is specifically needed
+    }
+  },
+  logging: false,
+});
+
 module.exports = sequelize;
