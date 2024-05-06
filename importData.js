@@ -1,4 +1,3 @@
-const Sequelize = require("sequelize");
 const db = require("./config/DBConfig");
 const Drug = require("./models/ModelsDrug"); // Assuming your model is in the same directory
 
