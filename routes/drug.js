@@ -84,7 +84,7 @@ router.get("/autocomplete", async (req, res) => {
     // Define the conditions for querying based on search and CAInd
     const conditions = {};
     if (search) {
-      conditions.cam = { [Sequelize.Op.like]: `%${search}%` };
+      conditions.cam = { [Sequelize.Op.iLike]: `%${search}%` };  // Changed to iLike for case-insensitive search
     }
     if (caInd) {
       conditions.CAindication = caInd;
@@ -92,6 +92,7 @@ router.get("/autocomplete", async (req, res) => {
 
     const drugs = await Drug.findAll({
       where: conditions,
+      attributes: ['cam', 'sci_name', 'comm_name', 'pinyin', 'main_const', 'other_const', 'camurl'], // Ensure to fetch only the necessary attributes
     });
 
     res.json(drugs);
@@ -100,5 +101,6 @@ router.get("/autocomplete", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 
 module.exports = router;
